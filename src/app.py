@@ -9,6 +9,7 @@ from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
 from models import db, User
+from models import db, User, Character, Planet, Favorite
 #from models import Person
 
 app = Flask(__name__)
@@ -45,7 +46,65 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
+# this endpoint gets a list of all the characters
+@app.route('/people', methods=['GET'])
+def get_people():
+    data = Character.query.all()
+    
+    people_serialize = []
+    for item in data:
+        people_serialize.append(item.serialize())
+    
+    return jsonify(people_serialize), 200
+
+# this endpoint gets one singular character's data
+@app.route('/people/<int:people_id>', methods=['GET'])
+def get_character(people_id):
+    data = Character.query.filter_by(id = people_id).first()
+
+    if data is None:
+        return jsonify({"msg":"this character doesn't exists"})
+    
+    return jsonify(data.serialize())
+
+# this endpoint gets a list of all the planets
+@app.route('/planets', methods=['GET'])
+def get_planets():
+    data = Character.query.all()
+    
+    planets_serialize = []
+    for item in data:
+        planets_serialize.append(item.serialize())
+    
+    return jsonify(planets_serialize), 200
+
+# this endpoint gets one singular planet's data
+@app.route('/planets/<int:planets_id>', methods=['GET'])
+def get_planet(planets_id):
+    data = Planets.query.filter_by(id = planets_id).first()
+
+    if data is None:
+        return jsonify({"msg":"this planet doesn't exists"})
+    
+    return jsonify(data.serialize())
+
+# this endpoint adds items to the "favorites" model
+@app.route('/users/<int:user_id>/favorites', methods=['GET'])
+def get_favorites(user_id):
+    data = Favorite.query.filter_by(user_id = user_id).all()
+
+    favorite_serialize = []
+    for item in data:
+        favorite_serialize.append(item.serialize())
+    
+    return jsonify(favorite_serialize), 200
+
+
+
+
+
+
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
-    PORT = int(os.environ.get('PORT', 3000))
+    PORT = int(os.environ.get('PORT', 3001))
     app.run(host='0.0.0.0', port=PORT, debug=False)
