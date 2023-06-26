@@ -70,7 +70,7 @@ def get_character(people_id):
 # this endpoint gets a list of all the planets
 @app.route('/planets', methods=['GET'])
 def get_planets():
-    data = Character.query.all()
+    data = Planet.query.all()
     
     planets_serialize = []
     for item in data:
@@ -88,7 +88,7 @@ def get_planet(planets_id):
     
     return jsonify(data.serialize())
 
-# this endpoint adds items to the "favorites" model
+# this endpoint gets a list of all the favorites of a singular user (by id)
 @app.route('/users/<int:user_id>/favorites', methods=['GET'])
 def get_favorites(user_id):
     data = Favorite.query.filter_by(user_id = user_id).all()
@@ -99,10 +99,76 @@ def get_favorites(user_id):
     
     return jsonify(favorite_serialize), 200
 
+# This endpoint gets a list of all the users
+@app.route('/users', methods=['GET'])
+def get_users():
+    data = User.query.all()
+    
+    users_serialize = []
+    for item in data:
+        users_serialize.append(item.serialize())
+    
+    return jsonify(users_serialize), 200
 
+# This endpoint adds a new planet favorites to the current user
+@app.route("/favorite/planet/<int:planet_id>/<int:user_id>", methods=["POST"])
+def add_favorite(planet_id, user_id):
+    favorite = Favorite.query.filter_by(planet_id = planet_id, user_id = user_id).first()
+    
+    if favorite is not None:
+        return jsonify({"msg":"that planet is already in favorites"})
 
+    new_fav_planet = Favorite(
+        planet_id = planet_id,
+        user_id = user_id
+    )
 
+    db.session.add(new_fav_planet)
+    db.session.commit()
+    return jsonify(new_fav_planet.serialize()), 200
 
+# This endpoint adds a new character favorites to the current user
+@app.route("/favorite/planet/<int:planet_id>/<int:user_id>", methods=["POST"])
+def add_favorite(character_id, user_id):
+    favorite = Favorite.query.filter_by(character_id = character_id, user_id = user_id).first()
+    
+    if favorite is not None:
+        return jsonify({"msg":"that character is already in favorites"})
+
+    new_fav_character = Favorite(
+        character_id = character_id,
+        user_id = user_id
+    )
+
+    db.session.add(new_fav_character)
+    db.session.commit()
+    return jsonify(new_fav_character.serialize()), 200
+
+# This endpoint removes a favorite planet
+@app.route('/favorite/planet/<int:planet_id>/<int:user_id>', methods=["DELETE"])
+def favorite_delete(planet_id, user_id):
+    favorite = Favorite.query.filter_by(planet_id = planet_id, user_id = user_id).first()
+
+    if favorite is None:
+        return jsonify({"msg":"that planet is not in favorites"})
+
+    db.session.delete(favorite)
+    db.session.commit()
+
+    return jsonify(favorite.serialize())
+
+# This endpoint removes a favorite character
+@app.route('/favorite/people/<int:people_id>/<int:user_id>', methods=["DELETE"])
+def favorite_delete(character_id, user_id):
+    favorite = Favorite.query.filter_by(character_id = character_id, user_id = user_id).first()
+
+    if favorite is None:
+        return jsonify({"msg":"that character is not in favorites"})
+
+    db.session.delete(favorite)
+    db.session.commit()
+
+    return jsonify(favorite.serialize())
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':

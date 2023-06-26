@@ -29,10 +29,8 @@ class User(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "name": self.name,
-            "height": self.height,
-            "mass": self.mass,
-            "gender": self.gender,
+            "email": self.email,
+            "username": self.username,
         }
 
 class Character(db.Model):
