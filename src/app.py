@@ -112,7 +112,7 @@ def get_users():
 
 # This endpoint adds a new planet favorites to the current user
 @app.route("/favorite/planet/<int:planet_id>/<int:user_id>", methods=["POST"])
-def add_favorite(planet_id, user_id):
+def add_favorite_planet(planet_id, user_id):
     favorite = Favorite.query.filter_by(planet_id = planet_id, user_id = user_id).first()
     
     if favorite is not None:
@@ -128,8 +128,8 @@ def add_favorite(planet_id, user_id):
     return jsonify(new_fav_planet.serialize()), 200
 
 # This endpoint adds a new character favorites to the current user
-@app.route("/favorite/planet/<int:planet_id>/<int:user_id>", methods=["POST"])
-def add_favorite(character_id, user_id):
+@app.route("/favorite/character/<int:character_id>/<int:user_id>", methods=["POST"])
+def add_favorite_character(character_id, user_id):
     favorite = Favorite.query.filter_by(character_id = character_id, user_id = user_id).first()
     
     if favorite is not None:
@@ -146,7 +146,7 @@ def add_favorite(character_id, user_id):
 
 # This endpoint removes a favorite planet
 @app.route('/favorite/planet/<int:planet_id>/<int:user_id>', methods=["DELETE"])
-def favorite_delete(planet_id, user_id):
+def remove_favorite_planet(planet_id, user_id):
     favorite = Favorite.query.filter_by(planet_id = planet_id, user_id = user_id).first()
 
     if favorite is None:
@@ -159,7 +159,7 @@ def favorite_delete(planet_id, user_id):
 
 # This endpoint removes a favorite character
 @app.route('/favorite/people/<int:people_id>/<int:user_id>', methods=["DELETE"])
-def favorite_delete(character_id, user_id):
+def remove_favorite_character(character_id, user_id):
     favorite = Favorite.query.filter_by(character_id = character_id, user_id = user_id).first()
 
     if favorite is None:
