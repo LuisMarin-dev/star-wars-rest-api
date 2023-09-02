@@ -158,7 +158,7 @@ def remove_favorite_planet(planet_id, user_id):
     return jsonify(favorite.serialize())
 
 # This endpoint removes a favorite character
-@app.route('/favorite/people/<int:people_id>/<int:user_id>', methods=["DELETE"])
+@app.route('/favorite/people/<int:character_id>/<int:user_id>', methods=["DELETE"])
 def remove_favorite_character(character_id, user_id):
     favorite = Favorite.query.filter_by(character_id = character_id, user_id = user_id).first()
 
