@@ -81,7 +81,7 @@ def get_planets():
 # this endpoint gets one singular planet's data
 @app.route('/planets/<int:planets_id>', methods=['GET'])
 def get_planet(planets_id):
-    data = Planets.query.filter_by(id = planets_id).first()
+    data = Planet.query.filter_by(id = planets_id).first()
 
     if data is None:
         return jsonify({"msg":"this planet doesn't exists"})
